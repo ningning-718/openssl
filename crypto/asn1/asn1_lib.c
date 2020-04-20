@@ -275,18 +275,29 @@ ASN1_STRING *ASN1_STRING_dup(const ASN1_STRING *str)
     return ret;
 }
 
-int ASN1_STRING_set(ASN1_STRING *str, const void *_data, int len)
+int ASN1_STRING_set(ASN1_STRING *str, const void *_data, int len_in)
 {
     unsigned char *c;
     const char *data = _data;
+    size_t len;
 
-    if (len < 0) {
+    if (len_in < 0) {
         if (data == NULL)
             return 0;
-        else
-            len = strlen(data);
+        len = strlen(data);
+    } else {
+        len = (size_t)len_in;
     }
-    if ((str->length <= len) || (str->data == NULL)) {
+    /*
+     * Verify that the length fits within an integer for assignment to
+     * str->length below.  The additional 1 is subtracted to allow for the
+     * '\0' terminator even though this isn't strictly necessary.
+     */
+    if (len > INT_MAX - 1) {
+        ASN1err(0, ASN1_R_TOO_LARGE);
+        return 0;
+    }
+    if ((size_t)str->length <= len || str->data == NULL) {
         c = str->data;
         str->data = OPENSSL_realloc(c, len + 1);
         if (str->data == NULL) {
@@ -426,7 +437,7 @@ char *sk_ASN1_UTF8STRING2text(STACK_OF(ASN1_UTF8STRING) *text, const char *sep,
         current = sk_ASN1_UTF8STRING_value(text, i);
         length = ASN1_STRING_length(current);
         if (i > 0 && sep_len > 0) {
-            strncpy(p, sep, sep_len);
+            strncpy(p, sep, sep_len + 1);
             p += sep_len;
         }
         strncpy(p, (const char *)ASN1_STRING_get0_data(current), length);

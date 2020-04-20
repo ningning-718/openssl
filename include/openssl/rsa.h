@@ -50,10 +50,12 @@ extern "C" {
 #   ifndef OPENSSL_RSA_MAX_PUBEXP_BITS
 #    define OPENSSL_RSA_MAX_PUBEXP_BITS    64
 #   endif
+#  endif /* OPENSSL_NO_DEPRECATED_3_0 */
 
-#   define RSA_3   0x3L
-#   define RSA_F4  0x10001L
+#  define RSA_3   0x3L
+#  define RSA_F4  0x10001L
 
+#  ifndef OPENSSL_NO_DEPRECATED_3_0
 /* based on RFC 8017 appendix A.1.2 */
 #   define RSA_ASN1_VERSION_DEFAULT        0
 #   define RSA_ASN1_VERSION_MULTI          1
@@ -111,6 +113,10 @@ int EVP_PKEY_CTX_get_rsa_padding(EVP_PKEY_CTX *ctx, int *pad_mode);
 int EVP_PKEY_CTX_set_rsa_pss_saltlen(EVP_PKEY_CTX *ctx, int saltlen);
 int EVP_PKEY_CTX_get_rsa_pss_saltlen(EVP_PKEY_CTX *ctx, int *saltlen);
 
+int EVP_PKEY_CTX_set_rsa_keygen_bits(EVP_PKEY_CTX *ctx, int bits);
+int EVP_PKEY_CTX_set_rsa_keygen_pubexp(EVP_PKEY_CTX *ctx, BIGNUM *pubexp);
+int EVP_PKEY_CTX_set_rsa_keygen_primes(EVP_PKEY_CTX *ctx, int primes);
+
 /* Salt length matches digest */
 #  define RSA_PSS_SALTLEN_DIGEST -1
 /* Verify only: auto detect salt length */
@@ -123,18 +129,6 @@ int EVP_PKEY_CTX_get_rsa_pss_saltlen(EVP_PKEY_CTX *ctx, int *saltlen);
 #  define EVP_PKEY_CTX_set_rsa_pss_keygen_saltlen(ctx, len) \
         EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA_PSS, EVP_PKEY_OP_KEYGEN, \
                           EVP_PKEY_CTRL_RSA_PSS_SALTLEN, len, NULL)
-
-#  define EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_KEYGEN_BITS, bits, NULL)
-
-#  define EVP_PKEY_CTX_set_rsa_keygen_pubexp(ctx, pubexp) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_KEYGEN_PUBEXP, 0, pubexp)
-
-#  define EVP_PKEY_CTX_set_rsa_keygen_primes(ctx, primes) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_KEYGEN_PRIMES, primes, NULL)
 
 int EVP_PKEY_CTX_set_rsa_mgf1_md(EVP_PKEY_CTX *ctx, const EVP_MD *md);
 int EVP_PKEY_CTX_set_rsa_mgf1_md_name(EVP_PKEY_CTX *ctx, const char *mdname,

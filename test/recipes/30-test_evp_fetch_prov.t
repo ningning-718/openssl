@@ -47,12 +47,7 @@ my @testdata = (
 
 unless ($no_fips) {
     push @setups, {
-        cmd     => app(['openssl', 'fipsinstall',
-                        '-out', bldtop_file('providers', 'fipsinstall.cnf'),
-                        '-module', bldtop_file('providers', platform->dso('fips')),
-                        '-provider_name', 'fips', '-mac_name', 'HMAC',
-                        '-macopt', 'digest:SHA256', '-macopt', 'hexkey:00',
-                        '-section_name', 'fips_sect']),
+        cmd     => perltest(['fipsinstall.pl', bldtop_dir()]),
         message => "fipsinstall"
     };
     push @testdata, (
@@ -121,7 +116,7 @@ foreach my $setup (@setups) {
 
 foreach my $alg (@types) {
     foreach my $testcase (@testdata) {
-        $ENV{OPENSSL_CONF} = $testcase->{config};
+        $ENV{OPENSSL_CONF} = "";
         foreach my $test (@{$testcase->{tests}}) {
             my @testproviders =
                 @{ $test->{providers} // $testcase->{providers} };
@@ -137,6 +132,7 @@ foreach my $alg (@types) {
                 "running evp_fetch_prov_test with $alg$testprovstr$testmsg";
 
             ok(run(test(["evp_fetch_prov_test", "-type", "$alg",
+                         "-config", "$testcase->{config}",
                          @testargs, @testproviders])),
                $message);
         }

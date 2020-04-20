@@ -291,6 +291,7 @@ CMS_F_CMS_RECEIPTREQUEST_CREATE0:159:CMS_ReceiptRequest_create0
 CMS_F_CMS_RECEIPT_VERIFY:160:cms_Receipt_verify
 CMS_F_CMS_RECIPIENTINFO_DECRYPT:134:CMS_RecipientInfo_decrypt
 CMS_F_CMS_RECIPIENTINFO_ENCRYPT:169:CMS_RecipientInfo_encrypt
+CMS_F_CMS_RECIPIENTINFO_KARI_DECRYPT:188:
 CMS_F_CMS_RECIPIENTINFO_KARI_ENCRYPT:178:cms_RecipientInfo_kari_encrypt
 CMS_F_CMS_RECIPIENTINFO_KARI_GET0_ALG:175:CMS_RecipientInfo_kari_get0_alg
 CMS_F_CMS_RECIPIENTINFO_KARI_GET0_ORIG_ID:173:\
@@ -1310,6 +1311,7 @@ SSL_F_OSSL_STATEM_SERVER_CONSTRUCT_MESSAGE:431:*
 SSL_F_OSSL_STATEM_SERVER_POST_PROCESS_MESSAGE:601:\
 	ossl_statem_server_post_process_message
 SSL_F_OSSL_STATEM_SERVER_POST_WORK:602:ossl_statem_server_post_work
+SSL_F_OSSL_STATEM_SERVER_PRE_WORK:640:
 SSL_F_OSSL_STATEM_SERVER_PROCESS_MESSAGE:603:ossl_statem_server_process_message
 SSL_F_OSSL_STATEM_SERVER_READ_TRANSITION:418:ossl_statem_server_read_transition
 SSL_F_OSSL_STATEM_SERVER_WRITE_TRANSITION:604:\
@@ -1769,6 +1771,7 @@ X509V3_F_DO_DIRNAME:144:do_dirname
 X509V3_F_DO_EXT_I2D:135:do_ext_i2d
 X509V3_F_DO_EXT_NCONF:151:do_ext_nconf
 X509V3_F_GNAMES_FROM_SECTNAME:156:gnames_from_sectname
+X509V3_F_I2R_ISSUER_SIGN_TOOL:176:
 X509V3_F_I2S_ASN1_ENUMERATED:121:i2s_ASN1_ENUMERATED
 X509V3_F_I2S_ASN1_IA5STRING:149:i2s_ASN1_IA5STRING
 X509V3_F_I2S_ASN1_INTEGER:120:i2s_ASN1_INTEGER
@@ -1808,6 +1811,7 @@ X509V3_F_V2I_GENERAL_NAME_EX:117:v2i_GENERAL_NAME_ex
 X509V3_F_V2I_IDP:157:v2i_idp
 X509V3_F_V2I_IPADDRBLOCKS:159:v2i_IPAddrBlocks
 X509V3_F_V2I_ISSUER_ALT:153:v2i_issuer_alt
+X509V3_F_V2I_ISSUER_SIGN_TOOL:175:
 X509V3_F_V2I_NAME_CONSTRAINTS:147:v2i_NAME_CONSTRAINTS
 X509V3_F_V2I_POLICY_CONSTRAINTS:146:v2i_POLICY_CONSTRAINTS
 X509V3_F_V2I_POLICY_MAPPINGS:145:v2i_POLICY_MAPPINGS
@@ -2075,19 +2079,28 @@ BN_R_P_IS_NOT_PRIME:112:p is not prime
 BN_R_TOO_MANY_ITERATIONS:113:too many iterations
 BN_R_TOO_MANY_TEMPORARY_VARIABLES:109:too many temporary variables
 CMP_R_ALGORITHM_NOT_SUPPORTED:139:algorithm not supported
+CMP_R_BAD_CHECKAFTER_IN_POLLREP:167:bad checkafter in pollrep
 CMP_R_BAD_REQUEST_ID:108:bad request id
 CMP_R_CERTHASH_UNMATCHED:156:certhash unmatched
 CMP_R_CERTID_NOT_FOUND:109:certid not found
+CMP_R_CERTIFICATE_NOT_ACCEPTED:169:certificate not accepted
 CMP_R_CERTIFICATE_NOT_FOUND:112:certificate not found
 CMP_R_CERTREQMSG_NOT_FOUND:157:certreqmsg not found
 CMP_R_CERTRESPONSE_NOT_FOUND:113:certresponse not found
 CMP_R_CERT_AND_KEY_DO_NOT_MATCH:114:cert and key do not match
+CMP_R_CHECKAFTER_OUT_OF_RANGE:181:checkafter out of range
+CMP_R_CHECKING_PBM_NO_SECRET_AVAILABLE:166:checking pbm no secret available
+CMP_R_ENCOUNTERED_KEYUPDATEWARNING:176:encountered keyupdatewarning
+CMP_R_ENCOUNTERED_WAITING:162:encountered waiting
 CMP_R_ERROR_CALCULATING_PROTECTION:115:error calculating protection
 CMP_R_ERROR_CREATING_CERTCONF:116:error creating certconf
 CMP_R_ERROR_CREATING_CERTREP:117:error creating certrep
+CMP_R_ERROR_CREATING_CR:163:error creating cr
 CMP_R_ERROR_CREATING_ERROR:118:error creating error
 CMP_R_ERROR_CREATING_GENM:119:error creating genm
 CMP_R_ERROR_CREATING_GENP:120:error creating genp
+CMP_R_ERROR_CREATING_IR:164:error creating ir
+CMP_R_ERROR_CREATING_KUR:165:error creating kur
 CMP_R_ERROR_CREATING_P10CR:121:error creating p10cr
 CMP_R_ERROR_CREATING_PKICONF:122:error creating pkiconf
 CMP_R_ERROR_CREATING_POLLREP:123:error creating pollrep
@@ -2095,10 +2108,9 @@ CMP_R_ERROR_CREATING_POLLREQ:124:error creating pollreq
 CMP_R_ERROR_CREATING_RP:125:error creating rp
 CMP_R_ERROR_CREATING_RR:126:error creating rr
 CMP_R_ERROR_PARSING_PKISTATUS:107:error parsing pkistatus
-CMP_R_ERROR_PROCESSING_MSG:158:error processing msg
+CMP_R_ERROR_PROCESSING_MESSAGE:158:error processing message
 CMP_R_ERROR_PROTECTING_MESSAGE:127:error protecting message
 CMP_R_ERROR_SETTING_CERTHASH:128:error setting certhash
-CMP_R_ERROR_TRANSFERRING_OUT:159:error transferring out
 CMP_R_ERROR_UNEXPECTED_CERTCONF:160:error unexpected certconf
 CMP_R_ERROR_VALIDATING_PROTECTION:140:error validating protection
 CMP_R_FAILED_EXTRACTING_PUBKEY:141:failed extracting pubkey
@@ -2110,32 +2122,44 @@ CMP_R_MISSING_KEY_INPUT_FOR_CREATING_PROTECTION:130:\
 CMP_R_MISSING_KEY_USAGE_DIGITALSIGNATURE:142:missing key usage digitalsignature
 CMP_R_MISSING_PRIVATE_KEY:131:missing private key
 CMP_R_MISSING_PROTECTION:143:missing protection
+CMP_R_MISSING_REFERENCE_CERT:168:missing reference cert
 CMP_R_MISSING_SENDER_IDENTIFICATION:111:missing sender identification
 CMP_R_MISSING_TRUST_STORE:144:missing trust store
 CMP_R_MULTIPLE_REQUESTS_NOT_SUPPORTED:161:multiple requests not supported
+CMP_R_MULTIPLE_RESPONSES_NOT_SUPPORTED:170:multiple responses not supported
 CMP_R_MULTIPLE_SAN_SOURCES:102:multiple san sources
 CMP_R_NO_STDIO:194:no stdio
 CMP_R_NO_SUITABLE_SENDER_CERT:145:no suitable sender cert
 CMP_R_NULL_ARGUMENT:103:null argument
 CMP_R_PKIBODY_ERROR:146:pkibody error
 CMP_R_PKISTATUSINFO_NOT_FOUND:132:pkistatusinfo not found
+CMP_R_POLLING_FAILED:172:polling failed
 CMP_R_POTENTIALLY_INVALID_CERTIFICATE:147:potentially invalid certificate
+CMP_R_RECEIVED_ERROR:180:received error
 CMP_R_RECIPNONCE_UNMATCHED:148:recipnonce unmatched
 CMP_R_REQUEST_NOT_ACCEPTED:149:request not accepted
+CMP_R_REQUEST_REJECTED_BY_SERVER:182:request rejected by server
 CMP_R_SENDER_GENERALNAME_TYPE_NOT_SUPPORTED:150:\
 	sender generalname type not supported
 CMP_R_SRVCERT_DOES_NOT_VALIDATE_MSG:151:srvcert does not validate msg
+CMP_R_TOTAL_TIMEOUT:184:total timeout
 CMP_R_TRANSACTIONID_UNMATCHED:152:transactionid unmatched
+CMP_R_TRANSFER_ERROR:159:transfer error
 CMP_R_UNEXPECTED_PKIBODY:133:unexpected pkibody
+CMP_R_UNEXPECTED_PKISTATUS:185:unexpected pkistatus
 CMP_R_UNEXPECTED_PVNO:153:unexpected pvno
 CMP_R_UNKNOWN_ALGORITHM_ID:134:unknown algorithm id
 CMP_R_UNKNOWN_CERT_TYPE:135:unknown cert type
+CMP_R_UNKNOWN_PKISTATUS:186:unknown pkistatus
 CMP_R_UNSUPPORTED_ALGORITHM:136:unsupported algorithm
 CMP_R_UNSUPPORTED_KEY_TYPE:137:unsupported key type
 CMP_R_UNSUPPORTED_PROTECTION_ALG_DHBASEDMAC:154:\
 	unsupported protection alg dhbasedmac
 CMP_R_WRONG_ALGORITHM_OID:138:wrong algorithm oid
+CMP_R_WRONG_CERTID_IN_RP:187:wrong certid in rp
 CMP_R_WRONG_PBM_VALUE:155:wrong pbm value
+CMP_R_WRONG_RP_COMPONENT_COUNT:188:wrong rp component count
+CMP_R_WRONG_SERIAL_IN_RP:173:wrong serial in rp
 CMS_R_ADD_SIGNER_ERROR:99:add signer error
 CMS_R_ATTRIBUTE_ERROR:161:attribute error
 CMS_R_CERTIFICATE_ALREADY_PRESENT:175:certificate already present
@@ -2379,6 +2403,7 @@ EC_R_D2I_ECPKPARAMETERS_FAILURE:117:d2i ecpkparameters failure
 EC_R_DECODE_ERROR:142:decode error
 EC_R_DISCRIMINANT_IS_ZERO:118:discriminant is zero
 EC_R_EC_GROUP_NEW_BY_NAME_FAILURE:119:ec group new by name failure
+EC_R_FAILED_MAKING_PUBLIC_KEY:166:failed making public key
 EC_R_FIELD_TOO_LARGE:143:field too large
 EC_R_GF2M_NOT_SUPPORTED:147:gf2m not supported
 EC_R_GROUP2PKPARAMETERS_FAILURE:120:group2pkparameters failure
@@ -2499,10 +2524,13 @@ EVP_R_EXPECTING_A_DSA_KEY:129:expecting a dsa key
 EVP_R_EXPECTING_A_EC_KEY:142:expecting a ec key
 EVP_R_EXPECTING_A_POLY1305_KEY:164:expecting a poly1305 key
 EVP_R_EXPECTING_A_SIPHASH_KEY:175:expecting a siphash key
+EVP_R_FETCH_FAILED:202:fetch failed
 EVP_R_FINAL_ERROR:188:final error
 EVP_R_FIPS_MODE_NOT_SUPPORTED:167:fips mode not supported
 EVP_R_GET_RAW_KEY_FAILED:182:get raw key failed
 EVP_R_ILLEGAL_SCRYPT_PARAMETERS:171:illegal scrypt parameters
+EVP_R_INACCESSIBLE_DOMAIN_PARAMETERS:204:inaccessible domain parameters
+EVP_R_INACCESSIBLE_KEY:203:inaccessible key
 EVP_R_INITIALIZATION_ERROR:134:initialization error
 EVP_R_INPUT_NOT_INITIALIZED:111:input not initialized
 EVP_R_INVALID_CUSTOM_LENGTH:185:invalid custom length
@@ -2515,6 +2543,7 @@ EVP_R_INVALID_OPERATION:148:invalid operation
 EVP_R_INVALID_PROVIDER_FUNCTIONS:193:invalid provider functions
 EVP_R_INVALID_SALT_LENGTH:186:invalid salt length
 EVP_R_KEYGEN_FAILURE:120:keygen failure
+EVP_R_KEYMGMT_EXPORT_FAILURE:205:keymgmt export failure
 EVP_R_KEY_SETUP_FAILED:180:key setup failed
 EVP_R_MEMORY_LIMIT_EXCEEDED:172:memory limit exceeded
 EVP_R_MESSAGE_DIGEST_IS_NULL:159:message digest is null
@@ -2525,6 +2554,7 @@ EVP_R_NOT_XOF_OR_INVALID_LENGTH:178:not XOF or invalid length
 EVP_R_NO_CIPHER_SET:131:no cipher set
 EVP_R_NO_DEFAULT_DIGEST:158:no default digest
 EVP_R_NO_DIGEST_SET:139:no digest set
+EVP_R_NO_IMPORT_FUNCTION:206:no import function
 EVP_R_NO_KEYMGMT_AVAILABLE:199:no keymgmt available
 EVP_R_NO_KEYMGMT_PRESENT:196:no keymgmt present
 EVP_R_NO_KEY_SET:154:no key set
@@ -2544,6 +2574,7 @@ EVP_R_PUBLIC_KEY_NOT_RSA:106:public key not rsa
 EVP_R_TOO_MANY_RECORDS:183:too many records
 EVP_R_UNKNOWN_CIPHER:160:unknown cipher
 EVP_R_UNKNOWN_DIGEST:161:unknown digest
+EVP_R_UNKNOWN_KEY_TYPE:207:unknown key type
 EVP_R_UNKNOWN_OPTION:169:unknown option
 EVP_R_UNKNOWN_PBE_ALGORITHM:121:unknown pbe algorithm
 EVP_R_UNSUPPORTED_ALGORITHM:156:unsupported algorithm
@@ -2573,12 +2604,13 @@ HTTP_R_MAX_RESP_LEN_EXCEEDED:117:max resp len exceeded
 HTTP_R_MISSING_ASN1_ENCODING:110:missing asn1 encoding
 HTTP_R_MISSING_CONTENT_TYPE:121:missing content type
 HTTP_R_MISSING_REDIRECT_LOCATION:111:missing redirect location
+HTTP_R_RECEIVED_ERROR:105:received error
+HTTP_R_RECEIVED_WRONG_HTTP_VERSION:106:received wrong http version
 HTTP_R_REDIRECTION_FROM_HTTPS_TO_HTTP:112:redirection from https to http
 HTTP_R_REDIRECTION_NOT_ENABLED:116:redirection not enabled
 HTTP_R_RESPONSE_LINE_TOO_LONG:113:response line too long
-HTTP_R_SERVER_RESPONSE_PARSE_ERROR:104:server response parse error
-HTTP_R_SERVER_SENT_ERROR:105:server sent error
-HTTP_R_SERVER_SENT_WRONG_HTTP_VERSION:106:server sent wrong http version
+HTTP_R_RESPONSE_PARSE_ERROR:104:response parse error
+HTTP_R_SOCK_NOT_SUPPORTED:122:sock not supported
 HTTP_R_STATUS_CODE_UNSUPPORTED:114:status code unsupported
 HTTP_R_TLS_NOT_ENABLED:107:tls not enabled
 HTTP_R_TOO_MANY_REDIRECTIONS:115:too many redirections
@@ -2789,6 +2821,7 @@ PROV_R_ILLEGAL_OR_UNSUPPORTED_PADDING_MODE:165:\
 PROV_R_INAVLID_UKM_LENGTH:146:inavlid ukm length
 PROV_R_INVALID_AAD:108:invalid aad
 PROV_R_INVALID_CONSTANT_LENGTH:157:invalid constant length
+PROV_R_INVALID_CURVE:176:invalid curve
 PROV_R_INVALID_CUSTOM_LENGTH:111:invalid custom length
 PROV_R_INVALID_DATA:115:invalid data
 PROV_R_INVALID_DIGEST:122:invalid digest
@@ -2828,6 +2861,7 @@ PROV_R_MISSING_XCGHASH:135:missing xcghash
 PROV_R_NOT_SUPPORTED:136:not supported
 PROV_R_NOT_XOF_OR_INVALID_LENGTH:113:not xof or invalid length
 PROV_R_NO_KEY_SET:114:no key set
+PROV_R_NO_PARAMETERS_SET:177:no parameters set
 PROV_R_OUTPUT_BUFFER_TOO_SMALL:106:output buffer too small
 PROV_R_PSS_SALTLEN_TOO_SMALL:172:pss saltlen too small
 PROV_R_READ_KEY:159:read key
@@ -2981,6 +3015,7 @@ SM2_R_INVALID_ENCODING:104:invalid encoding
 SM2_R_INVALID_FIELD:105:invalid field
 SM2_R_NO_PARAMETERS_SET:109:no parameters set
 SM2_R_USER_ID_TOO_LARGE:106:user id too large
+SSL_R_ALGORITHM_FETCH_FAILED:295:algorithm fetch failed
 SSL_R_APPLICATION_DATA_AFTER_CLOSE_NOTIFY:291:\
 	application data after close notify
 SSL_R_APP_DATA_IN_HANDSHAKE:100:app data in handshake

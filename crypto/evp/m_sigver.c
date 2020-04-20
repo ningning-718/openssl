@@ -39,7 +39,7 @@ static const char *canon_mdname(const char *mdname)
 static int do_sigver_init(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                           const EVP_MD *type, const char *mdname,
                           const char *props, ENGINE *e, EVP_PKEY *pkey,
-                          int ver)
+                          OPENSSL_CTX *libctx, int ver)
 {
     EVP_PKEY_CTX *locpctx = NULL;
     EVP_SIGNATURE *signature = NULL;
@@ -59,8 +59,12 @@ static int do_sigver_init(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
         ctx->provctx = NULL;
     }
 
-    if (ctx->pctx == NULL)
-        ctx->pctx = EVP_PKEY_CTX_new(pkey, e);
+    if (ctx->pctx == NULL) {
+        if (libctx != NULL)
+            ctx->pctx = EVP_PKEY_CTX_new_from_pkey(libctx, pkey, props);
+        else
+            ctx->pctx = EVP_PKEY_CTX_new(pkey, e);
+    }
     if (ctx->pctx == NULL)
         return 0;
 
@@ -196,6 +200,9 @@ static int do_sigver_init(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
      */
     ERR_pop_to_mark();
 
+    if (type == NULL && mdname != NULL)
+        type = evp_get_digestbyname_ex(locpctx->libctx, mdname);
+
     if (ctx->pctx->pmeth == NULL) {
         EVPerr(0, EVP_R_OPERATION_NOT_SUPPORTED_FOR_THIS_KEYTYPE);
         return 0;
@@ -250,35 +257,38 @@ static int do_sigver_init(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
      * This indicates the current algorithm requires
      * special treatment before hashing the tbs-message.
      */
+    ctx->pctx->flag_call_digest_custom = 0;
     if (ctx->pctx->pmeth->digest_custom != NULL)
-        return ctx->pctx->pmeth->digest_custom(ctx->pctx, ctx);
+        ctx->pctx->flag_call_digest_custom = 1;
 
     return 1;
 }
 
 int EVP_DigestSignInit_ex(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
-                          const char *mdname, const char *props, EVP_PKEY *pkey)
+                          const char *mdname, const char *props, EVP_PKEY *pkey,
+                          OPENSSL_CTX *libctx)
 {
-    return do_sigver_init(ctx, pctx, NULL, mdname, props, NULL, pkey, 0);
+    return do_sigver_init(ctx, pctx, NULL, mdname, props, NULL, pkey, libctx,
+                          0);
 }
 
 int EVP_DigestSignInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                        const EVP_MD *type, ENGINE *e, EVP_PKEY *pkey)
 {
-    return do_sigver_init(ctx, pctx, type, NULL, NULL, e, pkey, 0);
+    return do_sigver_init(ctx, pctx, type, NULL, NULL, e, pkey, NULL, 0);
 }
 
 int EVP_DigestVerifyInit_ex(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                             const char *mdname, const char *props,
-                            EVP_PKEY *pkey)
+                            EVP_PKEY *pkey, OPENSSL_CTX *libctx)
 {
-    return do_sigver_init(ctx, pctx, NULL, mdname, props, NULL, pkey, 1);
+    return do_sigver_init(ctx, pctx, NULL, mdname, props, NULL, pkey, libctx, 1);
 }
 
 int EVP_DigestVerifyInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                          const EVP_MD *type, ENGINE *e, EVP_PKEY *pkey)
 {
-    return do_sigver_init(ctx, pctx, type, NULL, NULL, e, pkey, 1);
+    return do_sigver_init(ctx, pctx, type, NULL, NULL, e, pkey, NULL, 1);
 }
 #endif /* FIPS_MDOE */
 
@@ -301,6 +311,12 @@ int EVP_DigestSignUpdate(EVP_MD_CTX *ctx, const void *data, size_t dsize)
                                                       data, dsize);
 
  legacy:
+    /* do_sigver_init() checked that |digest_custom| is non-NULL */
+    if (pctx->flag_call_digest_custom
+        && !ctx->pctx->pmeth->digest_custom(ctx->pctx, ctx))
+        return 0;
+    pctx->flag_call_digest_custom = 0;
+
     return EVP_DigestUpdate(ctx, data, dsize);
 }
 
@@ -323,6 +339,12 @@ int EVP_DigestVerifyUpdate(EVP_MD_CTX *ctx, const void *data, size_t dsize)
                                                         data, dsize);
 
  legacy:
+    /* do_sigver_init() checked that |digest_custom| is non-NULL */
+    if (pctx->flag_call_digest_custom
+        && !ctx->pctx->pmeth->digest_custom(ctx->pctx, ctx))
+        return 0;
+    pctx->flag_call_digest_custom = 0;
+
     return EVP_DigestUpdate(ctx, data, dsize);
 }
 
@@ -347,6 +369,12 @@ int EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sigret,
         ERR_raise(ERR_LIB_EVP, EVP_R_INITIALIZATION_ERROR);
         return 0;
     }
+
+    /* do_sigver_init() checked that |digest_custom| is non-NULL */
+    if (pctx->flag_call_digest_custom
+        && !ctx->pctx->pmeth->digest_custom(ctx->pctx, ctx))
+        return 0;
+    pctx->flag_call_digest_custom = 0;
 
     if (pctx->pmeth->flags & EVP_PKEY_FLAG_SIGCTX_CUSTOM) {
         if (sigret == NULL)
@@ -457,6 +485,12 @@ int EVP_DigestVerifyFinal(EVP_MD_CTX *ctx, const unsigned char *sig,
         ERR_raise(ERR_LIB_EVP, EVP_R_INITIALIZATION_ERROR);
         return 0;
     }
+
+    /* do_sigver_init() checked that |digest_custom| is non-NULL */
+    if (pctx->flag_call_digest_custom
+        && !ctx->pctx->pmeth->digest_custom(ctx->pctx, ctx))
+        return 0;
+    pctx->flag_call_digest_custom = 0;
 
     if (pctx->pmeth->verifyctx != NULL)
         vctx = 1;

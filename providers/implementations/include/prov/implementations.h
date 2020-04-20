@@ -274,6 +274,8 @@ extern const OSSL_DISPATCH dsa_signature_functions[];
 extern const OSSL_DISPATCH rsa_signature_functions[];
 extern const OSSL_DISPATCH ed25519_signature_functions[];
 extern const OSSL_DISPATCH ed448_signature_functions[];
+extern const OSSL_DISPATCH ecdsa_signature_functions[];
+
 
 /* Asym Cipher */
 extern const OSSL_DISPATCH rsa_asym_cipher_functions[];
@@ -319,6 +321,20 @@ extern const OSSL_DISPATCH x448_priv_der_serializer_functions[];
 extern const OSSL_DISPATCH x448_pub_der_serializer_functions[];
 extern const OSSL_DISPATCH x448_priv_pem_serializer_functions[];
 extern const OSSL_DISPATCH x448_pub_pem_serializer_functions[];
+
+extern const OSSL_DISPATCH ed25519_priv_print_serializer_functions[];
+extern const OSSL_DISPATCH ed25519_pub_print_serializer_functions[];
+extern const OSSL_DISPATCH ed25519_priv_der_serializer_functions[];
+extern const OSSL_DISPATCH ed25519_pub_der_serializer_functions[];
+extern const OSSL_DISPATCH ed25519_priv_pem_serializer_functions[];
+extern const OSSL_DISPATCH ed25519_pub_pem_serializer_functions[];
+
+extern const OSSL_DISPATCH ed448_priv_print_serializer_functions[];
+extern const OSSL_DISPATCH ed448_pub_print_serializer_functions[];
+extern const OSSL_DISPATCH ed448_priv_der_serializer_functions[];
+extern const OSSL_DISPATCH ed448_pub_der_serializer_functions[];
+extern const OSSL_DISPATCH ed448_priv_pem_serializer_functions[];
+extern const OSSL_DISPATCH ed448_pub_pem_serializer_functions[];
 
 extern const OSSL_DISPATCH ec_priv_text_serializer_functions[];
 extern const OSSL_DISPATCH ec_pub_text_serializer_functions[];
